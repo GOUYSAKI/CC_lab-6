@@ -9,6 +9,7 @@ pipeline {
                 docker rmi -f backend-app || true
                 docker build -t backend-app backend
                 '''
+                echo '✅ Backend image built successfully.'
             }
         }
 
@@ -21,6 +22,7 @@ pipeline {
                 docker run -d --name backend2 --network app-network backend-app
                 sleep 3
                 '''
+                echo '✅ Backend containers deployed successfully.'
             }
         }
 
@@ -34,13 +36,17 @@ pipeline {
                 sleep 2
                 docker exec nginx-lb nginx -s reload
                 '''
+                echo '✅ NGINX load balancer deployed successfully.'
             }
         }
     }
 
     post {
+        success {
+            echo '🎉 Pipeline executed successfully! All services are up and running.'
+        }
         failure {
-            echo 'Pipeline failed. Check console logs for errors.'
+            echo '❌ Pipeline failed. Check console logs for errors.'
         }
     }
 }
